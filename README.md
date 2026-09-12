@@ -14,23 +14,23 @@ overlap outright.
 
 ## See the demo / slide deck
 
-The pitch deck (`scorecycle-deck.html`) is published with GitHub Pages and
-rebuilds automatically on every push to `main`:
+The pitch deck (`index.html`) is published with GitHub Pages and rebuilds
+automatically on every push to `main`:
 
-**Live deck:** https://kushp15.github.io/ScoReCycle/scorecycle-deck.html
+**Live deck:** https://kushp15.github.io/ScoReCycle/
 
 To view it locally instead, just open the file directly in a browser:
 
 ```bash
-open scorecycle-deck.html   # macOS
+open index.html   # macOS
 ```
 
 ## Repository layout
 
 ```
-scorecycle-deck.html   Slide deck / demo, served via GitHub Pages
-Sources.docx           Literature references cited in the deck
-src/                    Pneumatic separator simulation and ML controller
+index.html   Slide deck / demo, served via GitHub Pages
+Sources.docx Literature references cited in the deck
+src/         Pneumatic separator simulation and ML controller
 ```
 
 ## Simulation code (`src/`)
