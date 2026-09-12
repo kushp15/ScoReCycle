@@ -400,17 +400,40 @@ const ML_PH = '<div class="ph"><b>Model recording goes here</b>'
   + '<code>model.mp4</code>'
   + '<span>It will start on its own when you reach this slide, and loop.</span></div>';
 
+// YouTube IFrame API: lets us hear "the video ended" so we can auto-advance.
+let ytPlayer=null, ytApiReady=false, ytWantsAttach=false;
+window.onYouTubeIframeAPIReady=function(){
+  ytApiReady=true;
+  if(ytWantsAttach) attachYTPlayer();
+};
+(function loadYTApi(){
+  const s=document.createElement('script');
+  s.src='https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+})();
+function attachYTPlayer(){
+  if(!document.getElementById('ytFrame')){ ytWantsAttach=true; return; }
+  if(!ytApiReady || !window.YT || !YT.Player){ ytWantsAttach=true; return; }
+  ytWantsAttach=false;
+  ytPlayer=new YT.Player('ytFrame',{events:{onStateChange:onYTStateChange}});
+}
+function onYTStateChange(e){
+  if(e.data===YT.PlayerState.ENDED && cur===0) go(cur+1);
+}
+
 function setMedia(i){
   // YouTube: the iframe is created on arrival and destroyed on leaving,
   // which is what actually stops the audio.
   const ym=document.getElementById('ytMount');
   if(!CONFIG.youtubeId){ ym.innerHTML=YT_PH; }
   else if(i===0){
-    if(!ym.querySelector('iframe'))
-      ym.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.youtubeId
-        +'?autoplay=1&rel=0&modestbranding=1&playsinline=1" '
+    if(!ym.querySelector('iframe')){
+      ym.innerHTML='<iframe id="ytFrame" src="https://www.youtube.com/embed/'+CONFIG.youtubeId
+        +'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin='+location.origin+'" '
         +'allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
-  } else { ym.innerHTML=''; }
+      attachYTPlayer();
+    }
+  } else { ytPlayer=null; ym.innerHTML=''; }
 
   const v=document.getElementById('mlVideo');
   if(i===3){ v.play().catch(()=>{}); } else { v.pause(); }
