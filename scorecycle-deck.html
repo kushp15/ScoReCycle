@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ScoReCycle</title>
+<style>
+:root{
+  --red:#C41230; --skibo:#941120; --gold:#FDB515; --iron:#6D6E71;
+  --steel:#E0E0E0; --wash:#F5F4F2; --teal:#1D7A6B; --ink:#000;
+  --serif:"Source Serif 4","Source Serif Pro",Cambria,Georgia,serif;
+  --sans:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#000;font-family:var(--sans)}
+.deck{position:relative;width:100vw;height:100vh}
+.slide{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .45s ease;display:flex;flex-direction:column;
+  padding:4.2vh 5.4vw 3.4vh}
+.slide.on{opacity:1;pointer-events:auto}
+.light{background:#fff;color:#000}
+.dark{background:#000;color:#fff}
+
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(22px,3.35vw,50px);
+  line-height:1.14;letter-spacing:-.01em;margin-bottom:.5em}
+.dark h1{color:#fff}
+
+.row{flex:1;display:flex;align-items:center;gap:3.2vw;min-height:0}
+.col{display:flex;flex-direction:column;min-width:0}
+
+.lbl{font-size:clamp(9px,.78vw,13px);color:var(--iron);letter-spacing:.02em}
+.dark .lbl{color:#8E8C88}
+.cap{font-family:var(--serif);font-weight:700;font-size:clamp(14px,1.42vw,23px);
+  margin-bottom:.42em}
+.sub{font-size:clamp(10px,.92vw,15px);line-height:1.52;color:#2A2A2A}
+.dark .sub{color:#8E8C88}
+
+.foot{font-size:clamp(9px,.72vw,12px);color:#A9A6A1;padding-top:1.6vh}
+.dark .foot{color:#5E5B57}
+
+.rule{height:3px;background:#000;margin:1.4vh 0 1.1vh}
+.kicker{font-family:var(--serif);font-weight:700;
+  font-size:clamp(13px,1.42vw,23px)}
+.kicker.gold{color:var(--gold)}
+
+/* ---------- slide 1 ---------- */
+#s1 .row{gap:2.4vw}
+.force{position:relative;width:100%;max-width:340px;aspect-ratio:1/1.05;margin:0 auto}
+.force .flake{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:62%;height:9px;background:var(--red);border-radius:1px;
+  animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,-46%)}50%{transform:translate(-50%,-54%)}}
+.arw{position:absolute;left:50%;width:3px;background:var(--teal);
+  transform-origin:bottom center}
+.arw::after{content:"";position:absolute;left:50%;top:-1px;transform:translateX(-50%);
+  border-left:7px solid transparent;border-right:7px solid transparent;
+  border-bottom:11px solid var(--teal)}
+.arw.up1{margin-left:-19%;height:23%;top:23%;animation:pulseUp 3.4s ease-in-out infinite}
+.arw.up2{margin-left:19%;height:23%;top:23%;animation:pulseUp 3.4s ease-in-out infinite}
+@keyframes pulseUp{0%,100%{height:21%;top:25%;opacity:.72}50%{height:27%;top:19%;opacity:1}}
+.arw.dn{background:var(--gold);height:23%;top:52%;margin-left:0;
+  animation:pulseDn 3.4s ease-in-out infinite}
+.arw.dn::after{top:auto;bottom:-1px;border-bottom:none;border-top:11px solid var(--gold)}
+@keyframes pulseDn{0%,100%{height:21%;opacity:1}50%{height:27%;opacity:.72}}
+.ftag{position:absolute;left:0;width:100%;text-align:center;
+  font-weight:700;font-size:clamp(10px,1.02vw,16px)}
+.ftag.t{top:8%;color:var(--teal)} .ftag.b{bottom:16%;color:var(--gold)}
+
+.balance{margin:2.2vh 0 1.8vh}
+.btags{display:flex;justify-content:space-between;
+  font-size:clamp(9px,.78vw,13px);font-weight:700;margin-bottom:8px}
+.bzone{position:relative;height:64px}
+.bline{position:absolute;left:0;right:0;top:50%;border-top:2px dashed var(--steel)}
+.fl{position:absolute;top:50%;border-radius:1px}
+.fl.a{left:4%;width:32%;height:8px;background:var(--red);
+  animation:hover1 2.9s ease-in-out infinite}
+.fl.b{right:4%;width:32%;height:19px;background:var(--iron);
+  animation:hover1 2.9s ease-in-out infinite .7s}
+@keyframes hover1{0%,100%{transform:translateY(-78%)}50%{transform:translateY(-22%)}}
+.bcap{text-align:center;margin-top:10px;
+  font-size:clamp(9px,.78vw,13px);color:var(--iron)}
+
+.note{background:var(--wash);padding:1.5vh 1.3vw;font-style:italic;
+  font-size:clamp(10px,.88vw,14px);line-height:1.55}
+
+/* ---------- slide 2 ---------- */
+#s2 .panels{flex:1;display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2.4vw;min-height:0}
+.panel{display:flex;flex-direction:column;min-height:0}
+.pnum{width:30px;height:30px;border-radius:50%;background:#2A2A2A;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;margin-bottom:1.4vh;flex:none;
+  transition:background .4s}
+.panel.live .pnum{background:var(--red)}
+.stage{flex:1;position:relative;min-height:0;display:flex;
+  align-items:center;justify-content:center}
+.stage canvas{max-width:100%;max-height:100%}
+.vread{position:absolute;right:6%;top:50%;transform:translateY(-50%);
+  font-family:var(--serif);font-weight:700;font-size:clamp(12px,1.15vw,19px);
+  color:var(--gold);opacity:0;transition:opacity .4s}
+.panel.live .vread{opacity:1}
+
+/* ---------- slide 3 ---------- */
+#s3 .quad{flex:1;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1.9vw;min-height:0}
+.q{display:flex;flex-direction:column;min-height:0}
+.qstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.qstage svg{max-width:100%;max-height:100%}
+
+/* media slides */
+.vidbox{position:relative;width:100%;aspect-ratio:16/9;background:#0C0C0C;
+  border:1px solid #2A2A2A;overflow:hidden}
+.vidbox iframe,.vidbox video{position:absolute;inset:0;width:100%;height:100%;
+  border:0;object-fit:contain;background:#000}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;text-align:center;
+  border:2px dashed #2F2F2F;color:#5E5B57;padding:4%}
+.ph b{color:#8E8C88;font-size:clamp(11px,1.05vw,17px);font-family:var(--serif)}
+.ph code{color:var(--gold);font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.82vw,13px);background:#161616;padding:3px 7px}
+.ph span{font-size:clamp(9px,.78vw,13px);line-height:1.6}
+
+#s0 .row{gap:4vw}
+.brand{font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,4.5vw,74px);line-height:1;letter-spacing:-.02em}
+.team{margin-top:3vh;font-family:var(--serif);font-weight:700;
+  font-size:clamp(12px,1.28vw,21px);color:var(--gold)}
+.members{margin-top:.9vh;font-size:clamp(9px,.92vw,15px);line-height:1.7;
+  color:#8E8C88}
+.tagline{font-size:clamp(11px,1.15vw,19px);line-height:1.55;color:#B9B6B0;
+  margin-top:2.2vh}
+.slug{margin-top:2.6vh;font-size:clamp(9px,.78vw,13px);color:#7E7B76;
+  letter-spacing:.09em}
+.bar{width:74px;height:3px;background:var(--red);margin-top:2.6vh}
+
+/* nav */
+.nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:9px;z-index:40}
+.dot{width:7px;height:7px;border-radius:50%;background:#C9C6C1;cursor:pointer;
+  transition:background .25s,transform .25s}
+.dot.on{background:var(--red);transform:scale(1.35)}
+.slide.dark ~ .nav .dot{background:#3A3A3A}
+.hint{position:fixed;bottom:13px;right:18px;font-size:10.5px;color:#A9A6A1;z-index:40}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ================= SLIDE 0 : TITLE + VIDEO ================= -->
+<section class="slide dark on" id="s0">
+  <div class="row" style="flex:1">
+    <div class="col" style="flex:0 0 38%;justify-content:center">
+      <div class="brand">ScoReCycle</div>
+      <div class="bar"></div>
+      <div class="tagline">A separator that watches what it is sorting
+        and changes the airflow while it runs.</div>
+      <div class="team">Teenage CMUtant Ninja Turtles</div>
+      <div class="members">Kush Patel&nbsp; ·&nbsp; Sharvi Shah&nbsp; ·&nbsp;
+        Stuart Schultz&nbsp; ·&nbsp; Yogesh Panchal</div>
+      <div class="slug">HACKCMU 2026 &nbsp;&nbsp;·&nbsp;&nbsp; OPTIMIZATION</div>
+    </div>
+    <div class="col" style="flex:1;justify-content:center">
+      <div class="vidbox" id="ytMount"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 1 ================= -->
+<section class="slide light" id="s1">
+  <h1>A shredded flake in a rising airflow has exactly one balance point.</h1>
+  <div class="row">
+
+    <div class="col" style="flex:0 0 18%">
+      <div class="lbl" style="text-align:center;margin-bottom:.6vh">light out</div>
+      <div class="stage" style="flex:1;min-height:0">
+        <canvas id="c1" width="320" height="760"></canvas>
+      </div>
+      <div class="lbl" style="text-align:center;margin-top:.6vh">heavy out, air in below</div>
+    </div>
+
+    <div class="col" style="flex:0 0 31%">
+      <div class="force">
+        <div class="ftag t">drag</div>
+        <div class="arw up1"></div>
+        <div class="arw up2"></div>
+        <div class="flake"></div>
+        <div class="arw dn"></div>
+        <div class="ftag b">weight</div>
+      </div>
+      <div class="sub" style="text-align:center;margin-top:.8vh">
+        Above the balance point it rises. Below it, it falls.
+        That threshold is the entire separation.
+      </div>
+    </div>
+
+    <div class="col" style="flex:1">
+      <div class="cap" style="color:var(--red)">Density alone does not decide.</div>
+      <div class="sub">It is density together with thickness. How much material sits
+        behind every square millimetre facing the flow.</div>
+      <div class="balance">
+        <div class="btags">
+          <span style="color:var(--red)">dense, thin</span>
+          <span style="color:var(--iron)">light, thick</span>
+        </div>
+        <div class="bzone">
+          <div class="bline"></div>
+          <div class="fl a"></div>
+          <div class="fl b"></div>
+        </div>
+        <div class="bcap">both sit on the same balance point</div>
+      </div>
+      <div class="note">Two completely different materials can suspend at the same
+        velocity. The column has nothing to separate them by.</div>
+    </div>
+  </div>
+  <div class="foot">Zhu, Zhang and Feng. Waste Management 131 (2021).</div>
+</section>
+
+<!-- ================= SLIDE 2 ================= -->
+<section class="slide dark" id="s2">
+  <h1>So we change the velocity while it is running.</h1>
+  <div class="panels">
+    <div class="panel" data-p="0">
+      <div class="pnum">1</div>
+      <div class="stage"><canvas id="c2a" width="340" height="620"></canvas></div>
+      <div class="cap" style="margin-top:1.6vh">Particles hang in the belly</div>
+      <div class="sub">Their balance point matches the air exactly, so they neither
+        rise nor fall. Every one is a coin flip.</div>
+    </div>
+    <div class="panel" data-p="1">
+      <div class="pnum">2</div>
+      <div class="stage">
+        <canvas id="c2b" width="340" height="620"></canvas>
+        <div class="vread" id="vread">+0.0%</div>
+      </div>
+      <div class="cap" style="margin-top:1.6vh">The camera watches, we nudge</div>
+      <div class="sub">Vision finds the group that is not moving. At the same moment
+        we change the air speed a few percent and see which way they go. That is how
+        the machine learns which way to move next.</div>
+    </div>
+    <div class="panel" data-p="2">
+      <div class="pnum">3</div>
+      <div class="stage"><canvas id="c2c" width="340" height="620"></canvas></div>
+      <div class="cap" style="margin-top:1.6vh">We park it in a gap</div>
+      <div class="sub">The stuck group moves to a speed almost no flakes sit at.
+        Far fewer coin flips.</div>
+    </div>
+  </div>
+  <div class="kicker gold" style="padding-top:2vh">
+    You cannot delete the stuck group. You can park it where almost nothing sits.
+  </div>
+</section>
+
+<!-- ================= ML VIDEO ================= -->
+<section class="slide dark" id="sv">
+  <h1>This is the model running.</h1>
+  <div class="row" style="flex:1;align-items:center">
+    <div class="col" style="flex:1">
+      <div class="vidbox" id="mlMount">
+        <video id="mlVideo" playsinline muted loop></video>
+      </div>
+    </div>
+  </div>
+  <div class="kicker gold" style="padding-top:2vh">
+    The airflow on screen is not scripted. It is the output of the loop.
+  </div>
+</section>
+
+<!-- ================= SLIDE 3 ================= -->
+<section class="slide light" id="s3">
+  <h1>Where the model goes next.</h1>
+  <div class="quad">
+
+    <div class="q">
+      <div class="qstage">
+        <svg viewBox="0 0 200 260">
+          <rect x="78" y="8"  width="44" height="76" fill="#F5F4F2" stroke="#6D6E71"/>
+          <rect x="78" y="176" width="44" height="76" fill="#F5F4F2" stroke="#6D6E71"/>
+          <rect id="belly" x="66" y="84" width="68" height="92"
+                fill="#E6F2EF" stroke="#1D7A6B" stroke-width="1.6"/>
+          <line id="wl" x1="62" y1="84" x2="62" y2="176" stroke="#C41230"
+                stroke-width="1" stroke-dasharray="4 4"/>
+          <line id="wr" x1="138" y1="84" x2="138" y2="176" stroke="#C41230"
+                stroke-width="1" stroke-dasharray="4 4"/>
+          <g id="warr" stroke="#C41230" stroke-width="2.6">
+            <line x1="62" y1="130" x2="138" y2="130"/>
+          </g>
+          <polygon id="wa1" points="62,130 72,125 72,135" fill="#C41230"/>
+          <polygon id="wa2" points="138,130 128,125 128,135" fill="#C41230"/>
+          <g id="wdots"></g>
+        </svg>
+      </div>
+      <div class="cap" style="color:var(--red)">We choose the width</div>
+      <div class="sub">A wider middle slows the air down. Slower air gives more flakes
+        time to sort themselves out. Today nobody picks this width. The machine just
+        came that way.</div>
+    </div>
+
+    <div class="q">
+      <div class="qstage">
+        <svg viewBox="0 0 200 260">
+          <circle id="lamp" cx="30" cy="120" r="13" fill="#FDB515"/>
+          <g stroke="#FDB515" stroke-width="1.4" stroke-dasharray="3 4">
+            <line x1="46" y1="110" x2="150" y2="110"/>
+            <line x1="46" y1="120" x2="150" y2="120"/>
+            <line x1="46" y1="130" x2="150" y2="130"/>
+          </g>
+          <rect x="152" y="98" width="16" height="44" fill="#6D6E71"/>
+          <rect id="mflake" x="78" y="114" width="42" height="9" fill="#C41230"/>
+          <text id="mread" x="100" y="196" font-size="17" text-anchor="middle"
+                fill="#1D7A6B" font-family="Cambria,Georgia,serif"
+                font-weight="700">0.00</text>
+          <text x="100" y="214" font-size="10" text-anchor="middle"
+                fill="#6D6E71" font-family="Arial">measured, not guessed</text>
+        </svg>
+      </div>
+      <div class="cap">We measure the flake</div>
+      <div class="sub">A lamp shines on every flake as it drops in. We read how thick
+        it really is. Right now the machine has to guess, and a flat photo cannot show
+        thickness.</div>
+    </div>
+
+    <div class="q">
+      <div class="qstage">
+        <svg viewBox="0 0 260 260">
+          <g id="chain"></g>
+        </svg>
+      </div>
+      <div class="cap">We chain the columns</div>
+      <div class="sub">Put three columns in a row. Each one sorts the leftovers from
+        the one before it. Three easy jobs are better than one hard job.</div>
+    </div>
+
+    <div class="q">
+      <div class="qstage">
+        <svg viewBox="0 0 220 260">
+          <rect x="24" y="30" width="34" height="56" fill="#F5F4F2" stroke="#6D6E71"/>
+          <rect x="24" y="146" width="34" height="56" fill="#F5F4F2" stroke="#6D6E71"/>
+          <rect x="15" y="86" width="52" height="60" fill="#E6F2EF" stroke="#1D7A6B"/>
+          <line x1="76" y1="116" x2="108" y2="116" stroke="#6D6E71" stroke-width="2"/>
+          <polygon points="114,116 104,111 104,121" fill="#6D6E71"/>
+          <circle cx="152" cy="116" r="30" fill="#F5F4F2" stroke="#6D6E71"/>
+          <g id="drum"><circle cx="152" cy="116" r="13" fill="#1D7A6B"/>
+            <line x1="152" y1="103" x2="152" y2="86" stroke="#1D7A6B" stroke-width="2.4"/>
+          </g>
+          <g id="waves" stroke="#1D7A6B" stroke-width="2" fill="none">
+            <path d="M118 178 q11 -7 22 0 q11 7 22 0 q11 -7 22 0"/>
+            <path d="M118 192 q11 -7 22 0 q11 7 22 0 q11 -7 22 0"/>
+            <path d="M118 206 q11 -7 22 0 q11 7 22 0 q11 -7 22 0"/>
+          </g>
+        </svg>
+      </div>
+      <div class="cap">We move the loop over</div>
+      <div class="sub">Other sorting machines have the same problem. Watch, nudge,
+        keep what worked. The same loop runs on all of them.</div>
+    </div>
+  </div>
+  <div class="rule"></div>
+  <div class="kicker">Every mechanical separator in the world is tuned once,
+    then run blind for life.</div>
+</section>
+
+<div class="nav">
+  <div class="dot on" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+</div>
+<div class="hint">arrow keys or click</div>
+</div>
+
+<script>
+/* =====================================================================
+   EDIT THESE TWO LINES. Everything else is automatic.
+   ===================================================================== */
+const CONFIG = {
+  // From https://www.youtube.com/watch?v=XXXXXXXXXXX  paste only the XXXXXXXXXXX
+  youtubeId : "Y4ncaHxt60E",
+  // Put the model recording next to this file and name it here.
+  mlVideo   : "model.mp4"
+};
+/* ===================================================================== */
+
+const YT_PH = '<div class="ph"><b>YouTube video goes here</b>'
+  + '<span>Open this file in a text editor and set</span>'
+  + '<code>youtubeId: "your_video_id"</code>'
+  + '<span>Needs internet. If the venue wifi is bad, save the video as an mp4 '
+  + 'instead and point mlVideo at it.</span></div>';
+
+const ML_PH = '<div class="ph"><b>Model recording goes here</b>'
+  + '<span>Save the screen capture next to this file as</span>'
+  + '<code>model.mp4</code>'
+  + '<span>It will start on its own when you reach this slide, and loop.</span></div>';
+
+function setMedia(i){
+  // YouTube: the iframe is created on arrival and destroyed on leaving,
+  // which is what actually stops the audio.
+  const ym=document.getElementById('ytMount');
+  if(!CONFIG.youtubeId){ ym.innerHTML=YT_PH; }
+  else if(i===0){
+    if(!ym.querySelector('iframe'))
+      ym.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.youtubeId
+        +'?autoplay=1&rel=0&modestbranding=1&playsinline=1" '
+        +'allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+  } else { ym.innerHTML=''; }
+
+  const v=document.getElementById('mlVideo');
+  if(i===3){ v.play().catch(()=>{}); } else { v.pause(); }
+}
+
+(function initML(){
+  const v=document.getElementById('mlVideo');
+  v.addEventListener('error',()=>{
+    if(!document.querySelector('#mlMount .ph'))
+      document.getElementById('mlMount').insertAdjacentHTML('beforeend',ML_PH);
+  });
+  if(CONFIG.mlVideo) v.src=CONFIG.mlVideo;
+  else document.getElementById('mlMount').insertAdjacentHTML('beforeend',ML_PH);
+})();
+
+/* ===================== navigation ===================== */
+const slides=[...document.querySelectorAll('.slide')];
+const dots=[...document.querySelectorAll('.dot')];
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  dots.forEach((d,k)=>d.classList.toggle('on',k===cur));
+  setMedia(cur);
+}
+setMedia(0);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1)}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1)}
+});
+dots.forEach(d=>d.addEventListener('click',e=>{e.stopPropagation();go(+d.dataset.i)}));
+document.addEventListener('click',e=>{
+  if(e.target.closest('.nav')||e.target.closest('.vidbox'))return;
+  go(e.clientX < innerWidth*0.3 ? cur-1 : cur+1);
+});
+
+/* ===================== column particle sim ===================== */
+function setup(cv){
+  const r=window.devicePixelRatio||1;
+  const w=cv.width, h=cv.height;
+  cv.width=w*r; cv.height=h*r;
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const g=cv.getContext('2d'); g.scale(r,r);
+  return {g,w,h};
+}
+
+function makeColumn(cv,opt){
+  const {g,w,h}=setup(cv);
+  const dark=!!opt.dark;
+  const cx=w/2;
+  const wS=w*(opt.wS||0.30), wB=w*(opt.wB||0.44);
+  const yT=h*0.02, hTop=h*0.32, hBel=h*0.30, hBot=h*0.34;
+  const belTop=yT+hTop, belBot=belTop+hBel;
+
+  // air velocity: belly is slower by the area ratio
+  let u=opt.u0;
+  const uAt=y=>(y>belTop&&y<belBot)? u*0.69 : u;
+
+  const N=opt.n||30;
+  const P=[];
+  function spawn(p){
+    p.y = belBot + Math.random()*hBot*0.55;
+    p.x = cx + (Math.random()-0.5)*wS*0.55;
+    // suspension velocity drawn from the feed distribution
+    const r1=Math.random();
+    if(r1 < opt.stuckFrac){            // right at the belly velocity
+      p.v = opt.u0*0.69 + (Math.random()-0.5)*opt.u0*0.012;
+      p.k = 'stuck';
+    } else if(r1 < opt.stuckFrac+ (1-opt.stuckFrac)/2){
+      p.v = opt.u0*(0.30+Math.random()*0.22); p.k='light';
+    } else {
+      p.v = opt.u0*(1.16+Math.random()*0.34); p.k='heavy';
+    }
+    p.r = 3.1+Math.random()*1.5;
+    p.ph = Math.random()*6.28;
+  }
+  for(let i=0;i<N;i++){const p={};spawn(p);p.y=yT+Math.random()*(h*0.94);P.push(p)}
+
+  const COL={stuck:'#FDB515',light:dark?'#9E9B96':'#6D6E71',heavy:'#C41230'};
+
+  function frame(t){
+    g.clearRect(0,0,w,h);
+    // column body
+    g.lineWidth=1.3;
+    g.fillStyle   = dark?'#151515':'#F5F4F2';
+    g.strokeStyle = dark?'#3A3A3A':'#6D6E71';
+    g.fillRect(cx-wS/2,yT,wS,hTop);      g.strokeRect(cx-wS/2,yT,wS,hTop);
+    g.fillRect(cx-wS/2,belBot,wS,hBot);  g.strokeRect(cx-wS/2,belBot,wS,hBot);
+    g.fillStyle   = dark?'#0F2420':'#E6F2EF';
+    g.strokeStyle = '#1D7A6B';
+    g.fillRect(cx-wB/2,belTop,wB,hBel);  g.strokeRect(cx-wB/2,belTop,wB,hBel);
+
+    for(const p of P){
+      const net = p.v - uAt(p.y);        // positive means it sinks
+      // square-root response: keeps near-balance drift visible without
+      // making the clearly-light and clearly-heavy flakes flash past
+      p.y += Math.sign(net)*Math.sqrt(Math.abs(net))*2.6;
+      p.y += Math.sin(t/430 + p.ph)*0.5; // turbulence
+      p.x += Math.sin(t/610 + p.ph)*0.16;
+      const lim = (p.y>belTop&&p.y<belBot)? wB*0.36 : wS*0.30;
+      p.x = Math.max(cx-lim,Math.min(cx+lim,p.x));
+      if(p.y < yT-8 || p.y > yT+h*0.96) spawn(p);
+      g.beginPath(); g.arc(p.x,p.y,p.r,0,6.2832);
+      g.fillStyle = COL[p.k]; g.fill();
+    }
+    if(opt.overlay) opt.overlay(g,{cx,wS,wB,belTop,belBot,w,h},t);
+    return {belTop,belBot};
+  }
+  return {frame, setU:x=>u=x, u0:opt.u0, P, spawn};
+}
+
+/* slide 1 column: a running separator */
+const col1 = makeColumn(document.getElementById('c1'),
+  {u0:1.0,n:34,stuckFrac:0.16,dark:false});
+
+/* camera watching the belly, drawn straight onto panel 2's canvas */
+function cameraOverlay(g,q,t){
+  const midY=(q.belTop+q.belBot)/2;
+  const camX=26, camY=midY-13;
+  const pulse=0.55+0.45*Math.abs(Math.sin(t/620));
+
+  // sight lines
+  g.save();
+  g.setLineDash([4,4]); g.lineWidth=1; g.strokeStyle='rgba(253,181,21,0.42)';
+  g.beginPath();
+  g.moveTo(camX+42,midY-4); g.lineTo(q.cx-q.wB/2,q.belTop+4);
+  g.moveTo(camX+42,midY+4); g.lineTo(q.cx-q.wB/2,q.belBot-4);
+  g.stroke(); g.restore();
+
+  // camera body
+  g.fillStyle='#2A2A2A'; g.strokeStyle='#FDB515'; g.lineWidth=1.4;
+  g.fillRect(camX,camY,34,26); g.strokeRect(camX,camY,34,26);
+  g.beginPath(); g.moveTo(camX+34,midY-7); g.lineTo(camX+44,midY-12);
+  g.lineTo(camX+44,midY+12); g.lineTo(camX+34,midY+7); g.closePath();
+  g.fillStyle='#FDB515'; g.fill();
+  g.beginPath(); g.arc(camX+17,midY,6,0,6.2832);
+  g.fillStyle='#0F0F0F'; g.fill();
+  g.strokeStyle='#FDB515'; g.lineWidth=1.2; g.stroke();
+
+  // recording dot
+  g.beginPath(); g.arc(camX+30,camY+5,2.6,0,6.2832);
+  g.fillStyle='rgba(196,18,48,'+pulse.toFixed(2)+')'; g.fill();
+
+  // detection box on the hovering cluster
+  const bx=q.cx-q.wB/2+5, by=q.belTop+7,
+        bw=q.wB-10, bh=(q.belBot-q.belTop)-14, c=11;
+  g.strokeStyle='rgba(253,181,21,'+(0.55+0.45*pulse).toFixed(2)+')'; g.lineWidth=2;
+  [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]]
+    .forEach(([x,y,sx,sy])=>{
+      g.beginPath(); g.moveTo(x+sx*c,y); g.lineTo(x,y); g.lineTo(x,y+sy*c); g.stroke();
+    });
+
+  g.font='600 11px Arial'; g.fillStyle='#FDB515'; g.textAlign='center';
+  g.fillText('cluster tracked', q.cx, by-9);
+  g.textAlign='left';
+}
+
+/* slide 2: three panels, driven as one story */
+const GEO={wS:0.265,wB:0.388};
+const A = makeColumn(document.getElementById('c2a'),{u0:1.0,n:26,stuckFrac:0.46,dark:true,...GEO});
+const B = makeColumn(document.getElementById('c2b'),{u0:1.0,n:26,stuckFrac:0.46,dark:true,...GEO,overlay:cameraOverlay});
+const C = makeColumn(document.getElementById('c2c'),{u0:1.0,n:26,stuckFrac:0.05,dark:true,...GEO});
+const vread=document.getElementById('vread');
+const panels=[...document.querySelectorAll('#s2 .panel')];
+
+/* slide 3 widgets */
+const belly=document.getElementById('belly'),
+      wl=document.getElementById('wl'), wr=document.getElementById('wr'),
+      wa1=document.getElementById('wa1'), wa2=document.getElementById('wa2'),
+      warr=document.getElementById('warr').firstElementChild,
+      wdots=document.getElementById('wdots');
+const dotEls=[];
+for(let i=0;i<7;i++){
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('r',3.4); c.setAttribute('fill', i<3?'#FDB515':(i<5?'#C41230':'#6D6E71'));
+  wdots.appendChild(c); dotEls.push({el:c,ph:Math.random()*6.28,
+    base:60+Math.random()*140, lane:(Math.random()-0.5)});
+}
+const mflake=document.getElementById('mflake'), mread=document.getElementById('mread'),
+      lamp=document.getElementById('lamp');
+const chain=document.getElementById('chain');
+(function(){
+  const xs=[36,130,224];
+  xs.forEach((x,i)=>{
+    const mk=(y,hh,ww,fill,stroke)=>{
+      const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r.setAttribute('x',x-ww/2);r.setAttribute('y',y);r.setAttribute('width',ww);
+      r.setAttribute('height',hh);r.setAttribute('fill',fill);
+      r.setAttribute('stroke',stroke);chain.appendChild(r);
+    };
+    mk(52,52,26,'#F5F4F2','#6D6E71');
+    mk(104,54,40,'#E6F2EF','#1D7A6B');
+    mk(158,54,26,'#F5F4F2','#6D6E71');
+    if(i<2){
+      const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+      l.setAttribute('x1',x+22);l.setAttribute('y1',131);
+      l.setAttribute('x2',x+68);l.setAttribute('y2',131);
+      l.setAttribute('stroke','#1D7A6B');l.setAttribute('stroke-width',2);
+      chain.appendChild(l);
+      const pg=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      pg.setAttribute('points',(x+74)+',131 '+(x+64)+',126 '+(x+64)+',136');
+      pg.setAttribute('fill','#1D7A6B');chain.appendChild(pg);
+    }
+  });
+  window.__chainDots=[];
+  for(let i=0;i<9;i++){
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('r',3.2);
+    c.setAttribute('fill',['#FDB515','#C41230','#6D6E71'][i%3]);
+    chain.appendChild(c);
+    window.__chainDots.push({el:c,x:xs[i%3],ph:Math.random()*6.28,
+      sp:0.4+Math.random()*0.5,off:Math.random()*120});
+  }
+})();
+const drum=document.getElementById('drum'), waves=document.getElementById('waves');
+
+/* ===================== master loop ===================== */
+const CYCLE=12000;               // 4s hold, 4s nudge, 4s parked
+let t0=performance.now();
+
+function loop(now){
+  const t=now-t0;
+  const ph=(t%CYCLE)/CYCLE;      // 0..1
+
+  if(cur===1){ col1.frame(t); }
+
+  if(cur===2){
+    // panel 1 always shows the stuck state
+    A.frame(t);
+    // panel 2 ramps the airflow up during the middle third
+    let bump=0, live=0;
+    if(ph<1/3){ live=0; bump=0 }
+    else if(ph<2/3){ live=1; bump=0.05*((ph-1/3)*3) }
+    else { live=2; bump=0.05 }
+    B.setU(1.0+bump);
+    B.frame(t);
+    vread.textContent='+'+(bump*100).toFixed(1)+'%';
+    C.setU(1.05);
+    C.frame(t);
+    panels.forEach((p,i)=>p.classList.toggle('live',i===live));
+  }
+
+  if(cur===4){
+    // belly width breathes, and the stuck dots respond
+    const k=(Math.sin(t/1500)+1)/2;               // 0..1
+    const halfW=26+k*22;                          // 26..48
+    belly.setAttribute('x',100-halfW);
+    belly.setAttribute('width',halfW*2);
+    wl.setAttribute('x1',100-halfW-4); wl.setAttribute('x2',100-halfW-4);
+    wr.setAttribute('x1',100+halfW+4); wr.setAttribute('x2',100+halfW+4);
+    warr.setAttribute('x1',100-halfW-4); warr.setAttribute('x2',100+halfW+4);
+    wa1.setAttribute('points',(100-halfW-4)+',130 '+(100-halfW+6)+',125 '+(100-halfW+6)+',135');
+    wa2.setAttribute('points',(100+halfW+4)+',130 '+(100+halfW-6)+',125 '+(100+halfW-6)+',135');
+    dotEls.forEach(d=>{
+      // a wider belly means slower air, so the group drifts down and spreads
+      const y=d.base + Math.sin(t/900+d.ph)*(6+k*16) + k*14;
+      d.el.setAttribute('cy',Math.max(92,Math.min(172,y)));
+      d.el.setAttribute('cx',100+d.lane*halfW*1.3);
+    });
+
+    // flake falls through the beam, reading updates on the way past
+    const fp=(t%2600)/2600;
+    const fy=96+fp*46;
+    mflake.setAttribute('y',fy);
+    mflake.setAttribute('height',9+Math.sin(t/700)*1.4);
+    if(fp>0.42&&fp<0.62){
+      lamp.setAttribute('fill','#FFDF80');
+      mread.textContent=(2.18+Math.sin(t/300)*0.04).toFixed(2);
+    } else { lamp.setAttribute('fill','#FDB515'); }
+
+    // dots cascade down the chain of columns
+    window.__chainDots.forEach(d=>{
+      const y=52+(((t*d.sp/12)+d.off)%150);
+      d.el.setAttribute('cy',y);
+      d.el.setAttribute('cx',d.x+Math.sin(t/600+d.ph)*7);
+    });
+
+    drum.setAttribute('transform','rotate('+(t/9%360)+' 152 116)');
+    waves.setAttribute('transform','translate('+(Math.sin(t/800)*7)+',0)');
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
