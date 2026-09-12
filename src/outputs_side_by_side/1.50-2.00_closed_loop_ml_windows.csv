@@ -1,0 +1,3 @@
+al_recovery,cu_recovery,al_purity,cu_purity,unresolved_fraction,objective,top_cu_true_fraction,heavy_al_true_fraction,window,flow_m3_h,duty
+0.9230769230769231,0.0,0.8275862068965517,0.0,0.275,0.4148885941644562,0.1724137931034483,0.0,1,109.0,0.55
+0.8461538461538461,0.0,0.6875,0.0,0.2,0.36959615384615385,0.3125,0.0,2,104.0,0.65
